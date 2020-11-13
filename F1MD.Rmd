@@ -1,30 +1,111 @@
 ---
-title: "F1MD"
+title: "Formula 1"
 author: "Daniel Sproston"
 date: "13/11/2020"
-output: html_document
+output:
+  bookdown::html_document2: default
+  bookdown::word_document2: default
+  bookdown::pdf_document2: default
+bibliography: F1 refs.bib
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.retina = 3)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r packages}
+library(tidyverse)
+library(magrittr)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(tibble)
+library(stringr)
+library(forcats)
+library(janitor)
+library(multiway)
+library(citr)
+library(kableExtra)
+library(flextable)
+library(gt)
+library(bibtex)
+library(ggplot2)
+library(readr)
+library("Hmisc")
+library(Rmisc)
+library(pgirmess)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r Data}
+setwd("~/R/Formula1MD")
+Constructors <- read.csv("F1 Constructors.csv")
+Constructors$Nationality <- as.factor(Constructors$Nationality)
+Constructors$Races.Entered <- as.numeric(Constructors$Races.Entered)
+Constructors$Seasons.Competed <- as.numeric(Constructors$Seasons.Competed)
+Constructors$No.Starts <- as.numeric(Constructors$No.Starts)
+Constructors$X..No.Start <- as.numeric(Constructors$X..No.Start)
+Constructors$Engine.Builders <- as.numeric(Constructors$Engine.Builders)
+Constructors$X..Engines..E.per.Season. <- as.numeric(Constructors$X..Engines..E.per.Season.)
+Constructors$Drivers <- as.numeric(Constructors$Drivers)
+Constructors$X..Drivers.per.race <- as.numeric(Constructors$X..Drivers.per.race)
+Constructors$Models <- as.numeric(Constructors$Models)
+Constructors$X..Models.per.season <- as.numeric(Constructors$X..Models.per.season)
+Constructors$Wins <- as.numeric(Constructors$Wins)
+Constructors$X..Wins.per.race <- as.numeric(Constructors$X..Wins.per.race)
+Constructors$Podiums <- as.numeric(Constructors$Podiums)
+Constructors$X..Podiums.per.race <- as.numeric(Constructors$X..Podiums.per.race)
+Constructors$Pole.Positions <- as.numeric(Constructors$Pole.Positions)
+Constructors$X..Pole.per.race <- as.numeric(Constructors$X..Pole.per.race)
+Constructors$X1.2.Finishes <- as.numeric(Constructors$X1.2.Finishes)
+Constructors$X..1.2.per.race <- as.numeric(Constructors$X..1.2.per.race)
+Constructors$Fastest.Laps <- as.numeric(Constructors$Fastest.Laps)
+Constructors$X..Fastest.lap.per.race <- as.numeric(Constructors$X..Fastest.lap.per.race)
+Constructors$Nominal.Points <- as.numeric(Constructors$Nominal.Points)
+Constructors$X..nominal.Points.per.race <- as.numeric(Constructors$X..nominal.Points.per.race)
+Constructors$Standardised.Points <- as.numeric(Constructors$Standardised.Points)
+Constructors$X..Standard.points.per.race <- as.numeric(Constructors$X..Standard.points.per.race)
+Constructors$Km.raced <- as.numeric(Constructors$Km.raced)
+Constructors$Km.led <- as.numeric(Constructors$Km.led)
+Constructors$X..Km.led <- as.numeric(Constructors$X..Km.led)
+Constructors$Average.Start.Position <- as.numeric(Constructors$Average.Start.Position)
+Constructors$Average.Finishing.position <- as.numeric(Constructors$Average.Finishing.position)
+Constructors$Activity <- as.factor(Constructors$Activity)
+Constructors$Constructor <- as.factor(Constructors$Constructor)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r out.width="70%", fig.cap="2020 F1 Cars."}
+knitr::include_graphics("../Formula1MD/ItalianGP.jpg")
+```
+
+# Introduction
+This is a random bit of fiddling  to get myself familiar with the workings of R Markdown. I am using data from the Formula 1 Constructors Championship, where there is a high volume of versatile data that can be analyzed in many different ways.It is also simple and easy to understand for friends and colleagues from other courses who are learning to use R Markdown with me. 
+
+```{r top 15 subdataset and chart}
+Top15 <- Constructors[Constructors$Podiums > 21, ]
+ggplot(Top15, aes(x="", y=Top15$Wins, fill= Top15$Constructor)) +
+  geom_bar(stat="identity", width=1) +
+  scale_fill_manual(values = c("dark red", "light green","white", 
+  "dark green", "green", "red", "blue", "black", "red",
+  "orange", "cyan", "dark blue", "yellow", "black", "light blue", "white",
+  "gold")) +
+  theme(panel.background = element_rect(fill = "white",colour = "white",
+                                        size = 0.5, linetype = "solid")) +
+  theme( axis.line = element_line(colour = "white", size = 1, linetype = "solid")) +
+  theme(text = element_text(size = 5), axis.text.y = element_text(size = 10),
+        axis.text.x = element_text(size = 10), legend.title = element_text(size = 15),
+        legend.text = element_text(size = 5), plot.title = element_text(size = 15),
+        axis.title.x = element_text(size = 15), axis.title.y = element_text(size = 10)) +
+  labs(x = "",
+       y = "Wins by Top 15 Constructor",
+       title = "Top 15",
+       fill = "Constructors") +
+  coord_polar("y", start=0)
+```
+
+# Summary of Key Teams
+The pie chart above details the number of wins by the 15 most famous teams in Formula 1 History. Some of these teams have a long history in F1, others have emerges fairly recently [@Jenkins2001-we]. 
+
+# References
