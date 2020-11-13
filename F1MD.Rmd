@@ -83,7 +83,7 @@ knitr::include_graphics("../Formula1MD/ItalianGP.jpg")
 # Introduction
 This is a random bit of fiddling  to get myself familiar with the workings of R Markdown. I am using data from the Formula 1 Constructors Championship, where there is a high volume of versatile data that can be analyzed in many different ways.It is also simple and easy to understand for friends and colleagues from other courses who are learning to use R Markdown with me. 
 
-```{r top 15 subdataset and chart}
+```{r fig.cap="Total wins divided by constructor"}
 Top15 <- Constructors[Constructors$Podiums > 21, ]
 ggplot(Top15, aes(x="", y=Top15$Wins, fill= Top15$Constructor)) +
   geom_bar(stat="identity", width=1) +
@@ -96,16 +96,21 @@ ggplot(Top15, aes(x="", y=Top15$Wins, fill= Top15$Constructor)) +
   theme( axis.line = element_line(colour = "white", size = 1, linetype = "solid")) +
   theme(text = element_text(size = 5), axis.text.y = element_text(size = 10),
         axis.text.x = element_text(size = 10), legend.title = element_text(size = 15),
-        legend.text = element_text(size = 5), plot.title = element_text(size = 15),
+        legend.text = element_text(size = 10), plot.title = element_text(size = 15),
         axis.title.x = element_text(size = 15), axis.title.y = element_text(size = 10)) +
   labs(x = "",
        y = "Wins by Top 15 Constructor",
-       title = "Top 15",
+       title = "Top 15 Constructors",
        fill = "Constructors") +
   coord_polar("y", start=0)
 ```
 
 # Summary of Key Teams
 The pie chart above details the number of wins by the 15 most famous teams in Formula 1 History. Some of these teams have a long history in F1, others have emerges fairly recently [@Jenkins2001-we]. 
+
+```{r table}
+knitr::kable(Top15[1:15, 1:4], caption = "Summary of Top 15")
+```
+
 
 # References
