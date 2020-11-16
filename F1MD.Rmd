@@ -111,6 +111,70 @@ The pie chart above details the number of wins by the 15 most famous teams in Fo
 ```{r table}
 knitr::kable(Top15[1:15, 1:4], caption = "Summary of Top 15")
 ```
+#Istanbul, Not Constantinople
+```{r out.width="70%", fig.cap="Istanbul Park International Circuit 2020 Layout"}
+knitr::include_graphics("../Formula1MD/IstanbulTrack.png")
+```
+The 2020 Formula 1 season is unusual for many reasons due to the coronavirus epidemic. However, the focus on European circuits over Asian racetracks has led to the return of older circuits we have not seen on the F1 calender for several years due to Liberty Medias attention on attracting an increased audience in Asia
 
+#2019 Hungarian Grand Prix
+The lap chart data from the Hungarian Grand Prix allows me to demonstrate types of geom_smooth/line charts, as the data available can be displayed in various formats, so many figures are available from this. 
+
+```{r Hungary Data}
+Hungary <- read.csv("Hungary 2019.csv")
+Hungary$Team <- as.factor(Hungary$Team)
+Hungary$Driver <- as.factor(Hungary$Driver)
+Hungary$Position <- as.integer(Hungary$Position)
+Hungary$Time..s. <- as.numeric(Hungary$Time..s.)
+Hungary$Lap <- as.integer(Hungary$Lap)
+str(Hungary)
+```
+
+```{r fig.cap="Hungary 2019 lap times by driver"}
+ggplot(Hungary, aes(x = Hungary$Lap, y = Hungary$Time..s., color = Hungary$Driver)) +
+  geom_point() +
+scale_color_manual(values = c("dark blue", "dark red", "orange", "red", "blue", 
+                    "yellow", "white", "black", "dark red", "pink", "orange", 
+                   "light blue", "dark blue", "yellow", "blue", "white", "black",
+                   "red", "pink", "light blue")) +
+  geom_line() +
+  ylim(77, 110) +
+  theme(panel.background = element_rect(fill = "light grey",colour = "light grey",
+                                        size = 0.5, linetype = "solid")) +
+  theme( axis.line = element_line(colour = "black", size = 1, linetype = "solid")) +
+  theme(text = element_text(size = 5), axis.text.y = element_text(size = 10),
+        axis.text.x = element_text(size = 10), legend.title = element_text(size = 15),
+        legend.text = element_text(size = 5), plot.title = element_text(size = 10),
+        axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
+  labs(x = "Lap",
+       y = "Lap time",
+       title = "Hungary",
+       color = "Driver")
+```
+```{r data changes"}
+NoPits <- Hungary[Hungary$Lap.Time < 99, ]
+LewisH <- Hungary %>% filter(Driver == "Lewis Hamilton")
+MaxV <- Hungary %>% filter(Driver == "Max Verstappen")
+VerstappenHamilton <- rbind(MaxV, LewisH)
+```
+
+```{r fig.cap="Hungary 2019 lap times by 2 best driver"}
+ggplot(VerstappenHamilton, aes(x = VerstappenHamilton$Lap, y = VerstappenHamilton$Time..s., color = VerstappenHamilton$Driver)) +
+  geom_point() +
+  ylim(76, 87) +
+  theme(panel.background = element_rect(fill = "light grey",colour = "black",
+                                        size = 0.5, linetype = "solid")) +
+  theme( axis.line = element_line(colour = "black", size = 1, linetype = "solid")) +
+  theme(text = element_text(size = 5), axis.text.y = element_text(size = 10),
+        axis.text.x = element_text(size = 10), legend.title = element_text(size = 15),
+        legend.text = element_text(size = 10), plot.title = element_text(size = 10),
+        axis.title.x = element_text(size = 10), axis.title.y = element_text(size = 10)) +
+  labs(x = "Lap",
+       y = "Lap time",
+       title = "Hungary",
+       color = "Driver") +
+  scale_color_manual(values = c("light blue", "dark blue", "white")) +
+  geom_smooth()
+```
 
 # References
